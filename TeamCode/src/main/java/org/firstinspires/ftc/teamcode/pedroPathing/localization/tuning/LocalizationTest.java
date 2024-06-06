@@ -48,10 +48,10 @@ public class LocalizationTest extends OpMode {
 
         dashboardPoseTracker = new DashboardPoseTracker(poseUpdater);
 
-        leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
-        leftRear = hardwareMap.get(DcMotorEx.class, "leftRear");
-        rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
-        rightRear = hardwareMap.get(DcMotorEx.class, "rightRear");
+        leftFront = hardwareMap.get(DcMotorEx.class, "lf");
+        leftRear = hardwareMap.get(DcMotorEx.class, "lb");
+        rightFront = hardwareMap.get(DcMotorEx.class, "rf");
+        rightRear = hardwareMap.get(DcMotorEx.class, "rb");
 
         leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
         leftRear.setDirection(DcMotorSimple.Direction.REVERSE);

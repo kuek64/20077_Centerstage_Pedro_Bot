@@ -74,8 +74,8 @@ public class TwoWheelLocalizer extends Localizer { // todo: make two wheel odo w
      */
     public TwoWheelLocalizer(HardwareMap map, Pose setStartPose) {
         // TODO: replace these with your encoder positions
-        forwardEncoderPose = new Pose(-5, -3.59375, 0);
-        strafeEncoderPose = new Pose(0.8125, -2.09375, Math.toRadians(90));
+        forwardEncoderPose = new Pose(-5, -3.59375, Math.toRadians(180));
+        strafeEncoderPose = new Pose(0.8125, -2.09375, Math.toRadians(270));
 
         hardwareMap = map;
 
@@ -84,11 +84,9 @@ public class TwoWheelLocalizer extends Localizer { // todo: make two wheel odo w
 
         // TODO: replace these with your encoder ports
         forwardEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "lf"));
-        strafeEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "rf"));
+        strafeEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "rb"));
 
         // TODO: reverse any encoders necessary
-        forwardEncoder.setDirection(Encoder.REVERSE);
-        strafeEncoder.setDirection(Encoder.FORWARD);
 
         setStartPose(setStartPose);
         timer = new NanoTimer();
