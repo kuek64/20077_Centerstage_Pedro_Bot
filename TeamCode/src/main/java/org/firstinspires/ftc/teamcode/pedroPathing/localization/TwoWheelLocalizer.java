@@ -95,7 +95,11 @@ public class TwoWheelLocalizer extends Localizer { // todo: make two wheel odo w
         deltaTimeNano = 1;
         displacementPose = new Pose();
         currentVelocity = new Pose();
-
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         previousIMUOrientation = MathFunctions.normalizeAngle(imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS));
         deltaRadians = 0;
     }
