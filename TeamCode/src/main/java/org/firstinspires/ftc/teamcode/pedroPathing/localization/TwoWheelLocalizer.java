@@ -87,7 +87,7 @@ public class TwoWheelLocalizer extends Localizer { // todo: make two wheel odo w
         strafeEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "rf"));
 
         // TODO: reverse any encoders necessary
-        forwardEncoder.setDirection(Encoder.REVERSE);
+        forwardEncoder.setDirection(Encoder.FORWARD);
         strafeEncoder.setDirection(Encoder.FORWARD);
 
         setStartPose(setStartPose);
