@@ -122,9 +122,8 @@ public final class Blue_Close2_2 extends LinearOpMode {
     public void buildPaths()
     {
         firstCycleToStack = follower.pathBuilder()
-                .addPath(new BezierCurve(new Point(yellowScoringPose1), new Point(144-76.5, 106, Point.CARTESIAN), new Point(driveToWhitePose1.getX()+2, 79, Point.CARTESIAN)))
+                .addPath(new BezierLine(new Point(yellowScoringPose1.getX()+0.0001, 32, Point.CARTESIAN), new Point(driveToWhitePose1)))
                 .setConstantHeadingInterpolation(yellowScoringPose1.getHeading())
-                .setPathEndTimeoutConstraint(0)
                 .build();
     }
 
