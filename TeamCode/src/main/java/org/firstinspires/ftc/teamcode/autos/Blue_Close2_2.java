@@ -127,15 +127,14 @@ public final class Blue_Close2_2 extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-
-        follower = new Follower(hardwareMap);
-        follower.setStartingPose(startPose);
+        follower.update();
         updatePoses();
         buildPaths();
-        //ClawSubsystem claw = new ClawSubsystem(hardwareMap);
+        ClawSubsystem claw = new ClawSubsystem(hardwareMap);
         //huskyLens = hardwareMap.get(HuskyLens.class, "huskyLens");
         clawL = hardwareMap.get(Servo.class, "clawL");
-        //follower.update();
+        follower = new Follower(hardwareMap);
+        follower.setStartingPose(startPose);
 
         //claw.closeLClaw();
 
@@ -172,7 +171,51 @@ public final class Blue_Close2_2 extends LinearOpMode {
 
                 //----------------------------1----------------------------\\
             follower.followPath(firstCycleToStack);
+                    Actions.runBlocking(
+                            new SequentialAction(
+                                    new ParallelAction(
+                                            new FollowPathAction(follower, purplePath1, false),
+                                            new SleepAction(0.5)
 
+                                    ),
+                                    claw.openLClaw(),
+                                    //new SleepAction(0.35),
+                                    new ParallelAction(
+                                            new ParallelAction(
+                                                    //presets.ScoringPos(),
+                                                    new FollowPathAction(follower, yellowPath1, false),
+                                                    new SleepAction(0.5)
+                                            ),
+                                            claw.closeLClaw()
+                                    ),
+                                    //new SleepAction(.1),
+                                    //claw.openRClaw(),
+                                    //new SleepAction(.25),
+                                    new ParallelAction(
+                                            new SequentialAction(
+                                                    //presets.GroundPos(),
+                                                    //claw.openClaws(),
+                                                    //claw.whiteGroundClaw()
+                                            ),
+                                            new FollowPathAction(follower, towhiteCycle1Path1, false),
+                                            new SleepAction(0.5)
+                                    ),
+                                    new SequentialAction(
+                                            //presets.WhiteStack(),
+                                            new FollowPathAction(follower, backwhiteCycle1Path, false),
+                                            new SleepAction(0.5)
+                                            //presets.WhiteScoringPos()
+                                            )
+                                    ),
+
+                                    new SequentialAction(
+                                            new SleepAction(.1),
+                                            claw.openClaws(),
+                                            new SleepAction(.25),
+                                            new FollowPathAction(follower, parkingPath, false),
+                                            presets.WhiteGroundPos()
+                                    )
+                            );
                     sleep(400000);
                 }
 

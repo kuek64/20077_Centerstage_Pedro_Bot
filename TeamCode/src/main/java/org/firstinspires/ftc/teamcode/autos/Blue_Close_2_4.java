@@ -3,9 +3,7 @@ package org.firstinspires.ftc.teamcode.autos;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.DistanceSensor;
 
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.pedroPathing.follower.Follower;
 import org.firstinspires.ftc.teamcode.pedroPathing.localization.Pose;
 import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.BezierCurve;
@@ -14,25 +12,14 @@ import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.MathFunctions;
 import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.Path;
 import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.PathChain;
 import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.Point;
-import org.firstinspires.ftc.teamcode.pedroPathing.util.SingleRunAction;
 import org.firstinspires.ftc.teamcode.pedroPathing.util.Timer;
-import org.firstinspires.ftc.vision.VisionPortal;
-
-import java.util.ArrayList;
 
 @Autonomous(name = "Blue Close Side 2 + 4", group = "Autonomous")
 public class Blue_Close_2_4 extends OpMode {
 
-    private Timer pathTimer, opmodeTimer, scanTimer, distanceSensorUpdateTimer, distanceSensorDecimationTimer;
-    private VisionPortal visionPortal;
+    private Timer pathTimer, opmodeTimer, scanTimer;
 
     private String navigation;
-
-    private DistanceSensor leftDistanceSensor, rightDistanceSensor, rearDistanceSensor;
-
-    private SingleRunAction foldUp;
-
-    private boolean distanceSensorDisconnected, rearDistanceSensorDisconnected;
 
     // IMPORTANT: y increasing is towards the backstage from the audience,
     // while x increasing is towards the red side from the blue side
@@ -81,9 +68,7 @@ public class Blue_Close_2_4 extends OpMode {
     private Path scoreSpikeMark, initialScoreOnBackdrop;
     private PathChain firstCycleToStack, firstCycleStackGrab, firstCycleScoreOnBackdrop, secondCycleToStack, secondCycleStackGrab, secondCycleScoreOnBackdrop;
 
-    private int pathState, distanceSensorDisconnectCycleCount, detectDistanceSensorDisconnect;
-
-    private ArrayList<Boolean> distanceSensorDisconnects;
+    private int pathState;
 
     public void setBackdropGoalPose() {
         switch (navigation) {
@@ -218,40 +203,6 @@ public class Blue_Close_2_4 extends OpMode {
         autonomousPathUpdate();
     }
 
-    public void stackCorrection(double correctionPower) {
-        if (distanceSensorDecimationTimer.getElapsedTime() > 20) {
-
-            double left = leftDistanceSensor.getDistance(DistanceUnit.MM);
-
-            if (!(left == 65535)) {
-
-                double right = rightDistanceSensor.getDistance(DistanceUnit.MM);
-
-                if (!(right == 65535)) {
-
-                    double error = (left / 25.4) - (right / 25.4);
-
-                    error *= -1;
-
-                    if (Math.abs(error) > 0.5) {
-                        follower.setXOffset(follower.getXOffset() + distanceSensorDecimationTimer.getElapsedTimeSeconds() * correctionPower * MathFunctions.getSign(error));
-                    } else {
-                        follower.setXOffset(follower.getXOffset() + follower.getTranslationalError().getXComponent());
-                    }
-
-                    follower.setXOffset(MathFunctions.clamp(follower.getXOffset(), -6, 6));
-
-                    //telemetry.addData("error", error);
-                    distanceSensorDecimationTimer.resetTimer();
-                } else {
-                    distanceSensorDisconnected = true;
-                }
-            } else {
-                distanceSensorDisconnected = true;
-            }
-        }
-    }
-
     @Override
     public void loop() {
         follower.update();
@@ -266,23 +217,9 @@ public class Blue_Close_2_4 extends OpMode {
 
     @Override
     public void init() {
-        //PhotonCore.start(this.hardwareMap);
-
-        foldUp = new SingleRunAction(()-> {
-            if (Integer.parseInt(String.valueOf(pathState).substring(0,1)) < 4) setPathState(40);
-        });
-
-        distanceSensorDisconnects = new ArrayList<>();
-
-        rearDistanceSensor = hardwareMap.get(DistanceSensor.class, "rearDistanceSensor");
-        leftDistanceSensor = hardwareMap.get(DistanceSensor.class, "leftDistanceSensor");
-        rightDistanceSensor = hardwareMap.get(DistanceSensor.class, "rightDistanceSensor");
-
         pathTimer = new Timer();
         opmodeTimer = new Timer();
         scanTimer = new Timer();
-        distanceSensorUpdateTimer = new Timer();
-        distanceSensorDecimationTimer = new Timer();
 
         follower = new Follower(hardwareMap);
         follower.setStartingPose(startPose);
@@ -298,7 +235,6 @@ public class Blue_Close_2_4 extends OpMode {
 
     @Override
     public void start() {
-        visionPortal.stopStreaming();
         setBackdropGoalPose();
         buildPaths();
         opmodeTimer.resetTimer();
