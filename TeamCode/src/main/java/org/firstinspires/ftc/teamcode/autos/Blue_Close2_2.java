@@ -133,6 +133,7 @@ public final class Blue_Close2_2 extends LinearOpMode {
         ClawSubsystem claw = new ClawSubsystem(hardwareMap);
         //huskyLens = hardwareMap.get(HuskyLens.class, "huskyLens");
         clawL = hardwareMap.get(Servo.class, "clawL");
+        fOllower = new Follower(hardwareMap);
 
         claw.closeLClaw();
 
