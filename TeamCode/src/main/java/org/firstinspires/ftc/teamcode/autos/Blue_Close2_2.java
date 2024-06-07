@@ -37,7 +37,7 @@ public final class Blue_Close2_2 extends LinearOpMode {
     private LiftSubsystem lift;
     private Servo clawL, clawR, pivot;
     private Follower follower;
-    private PathChain firstCycleToStack, firstCycleStackGrab, firstCycleScoreOnBackdrop, secondCycleToStack, secondCycleStackGrab, secondCycleScoreOnBackdrop;
+    private PathChain firstCycleToStack;//, firstCycleStackGrab, firstCycleScoreOnBackdrop, secondCycleToStack, secondCycleStackGrab, secondCycleScoreOnBackdrop;
 
 
     private Pose startPose = new Pose(-62+72, 12+72, 0);
@@ -137,7 +137,7 @@ public final class Blue_Close2_2 extends LinearOpMode {
         clawL = hardwareMap.get(Servo.class, "clawL");
         //follower.update();
 
-        claw.closeLClaw();
+        //claw.closeLClaw();
 
         //Huskylens Setup
         Deadline rateLimit = new Deadline(1, TimeUnit.SECONDS);
