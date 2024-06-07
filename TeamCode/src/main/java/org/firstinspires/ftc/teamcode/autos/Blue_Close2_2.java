@@ -5,7 +5,6 @@ import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.SleepAction;
 import com.acmerobotics.roadrunner.ftc.Actions;
-import com.qualcomm.hardware.dfrobot.HuskyLens;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -30,7 +29,7 @@ import java.util.concurrent.TimeUnit;
 @Autonomous(name = "Blue Close 2 + 2",group = "Blue")
 public final class Blue_Close2_2 extends LinearOpMode {
 
-    private HuskyLens huskyLens;
+    /*private HuskyLens huskyLens;*/
     private ClawSubsystem claw;
     private GearRotationSubsystem gear;
     private PresetSubsystem presets;
@@ -121,21 +120,21 @@ public final class Blue_Close2_2 extends LinearOpMode {
     public void runOpMode() {
         updatePoses();
         ClawSubsystem claw = new ClawSubsystem(hardwareMap);
-        huskyLens = hardwareMap.get(HuskyLens.class, "huskyLens");
+        //huskyLens = hardwareMap.get(HuskyLens.class, "huskyLens");
         clawL = hardwareMap.get(Servo.class, "clawL");
 
-        clawL.setPosition(0.5);
+        claw.closeLClaw();
 
         //Huskylens Setup
         Deadline rateLimit = new Deadline(1, TimeUnit.SECONDS);
         rateLimit.expire();
 
-        if (!huskyLens.knock()) {
+        /*if (!huskyLens.knock()) {
             telemetry.addData(">>", "Problem communicating with " + huskyLens.getDeviceName());
         } else {
             telemetry.addData(">>", "Press start to continue");
         }
-        huskyLens.selectAlgorithm(HuskyLens.Algorithm.COLOR_RECOGNITION);
+        huskyLens.selectAlgorithm(HuskyLens.Algorithm.COLOR_RECOGNITION);*/
 
 
         // Wait for driver to press start
@@ -151,11 +150,11 @@ public final class Blue_Close2_2 extends LinearOpMode {
                 continue;
             }
             rateLimit.reset();
-            HuskyLens.Block[] blocks = huskyLens.blocks();
+            /*HuskyLens.Block[] blocks = huskyLens.blocks();
             telemetry.addData("Block count", blocks.length);
             for (int i = 0; i < blocks.length; i++) {
                 telemetry.addData("Block", blocks[i].toString());// this gives you the data
-                telemetry.addData("location?", blocks[i].x);// this gives you just x
+                telemetry.addData("location?", blocks[i].x);// this gives you just x*/
 
                 //----------------------------1----------------------------\\
                     Actions.runBlocking(
@@ -339,4 +338,3 @@ public final class Blue_Close2_2 extends LinearOpMode {
         }
 
     }
-}
