@@ -56,7 +56,7 @@ public class Blue_Close_Two_Two extends OpMode {
                 secondCycleBackdropGoalPose = new Pose(blueRightBackdrop.getX(), blueRightBackdrop.getY(), Math.toRadians(270));
                 break;
             case "middle":
-                spikeMarkGoalPose = new Pose(blueLeftSideMiddleSpikeMark.getX(), blueLeftSideMiddleSpikeMark.getY()+3, Math.PI/2);
+                spikeMarkGoalPose = new Pose(blueLeftSideMiddleSpikeMark.getX(), blueLeftSideMiddleSpikeMark.getY()+3, Math.toRadians(270));
                 initialBackdropGoalPose = new Pose(blueMiddleBackdrop.getX(), blueMiddleBackdrop.getY(),Math.toRadians(270));
                 firstCycleBackdropGoalPose = new Pose(blueRightBackdrop.getX(), blueRightBackdrop.getY(), Math.toRadians(270));
                 secondCycleBackdropGoalPose = new Pose(blueRightBackdrop.getX(), blueRightBackdrop.getY(), Math.toRadians(270));
@@ -103,7 +103,7 @@ public class Blue_Close_Two_Two extends OpMode {
                 break;
         }
         //initialScoreOnBackdrop.setConstantHeadingInterpolation(Math.PI * 1.5);
-        initialScoreOnBackdrop.setLinearHeadingInterpolation(scoreSpikeMark.getEndTangent().getTheta(), Math.PI * 1.5, 0.5);
+        initialScoreOnBackdrop.setLinearHeadingInterpolation(scoreSpikeMark.getEndTangent().getTheta(), Math.toRadians(270), 0.5);
         initialScoreOnBackdrop.setPathEndTimeoutConstraint(2.5);
 
         switch (navigation) {
