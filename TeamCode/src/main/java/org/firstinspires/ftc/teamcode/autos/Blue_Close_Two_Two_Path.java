@@ -42,7 +42,7 @@ public class Blue_Close_Two_Two_Path extends OpMode {
     private Follower follower;
 
     private Path scoreSpikeMark, initialScoreOnBackdrop;
-    private PathChain firstCycleToStack, firstCycleStackGrab, firstCycleScoreOnBackdrop, secondCycleToStack, secondCycleStackGrab, secondCycleScoreOnBackdrop;
+    private PathChain firstCycleToStack, firstCycleStackGrab, firstCycleScoreOnBackdrop;
 
     private int pathState;
 
@@ -56,7 +56,7 @@ public class Blue_Close_Two_Two_Path extends OpMode {
                 secondCycleBackdropGoalPose = new Pose(blueRightBackdrop.getX(), blueRightBackdrop.getY(), Math.toRadians(270));
                 break;
             case "middle":
-                spikeMarkGoalPose = new Pose(blueLeftSideMiddleSpikeMark.getX(), blueLeftSideMiddleSpikeMark.getY()+3, Math.PI/2);
+                spikeMarkGoalPose = new Pose(blueLeftSideMiddleSpikeMark.getX(), blueLeftSideMiddleSpikeMark.getY()+3, Math.toRadians(270));
                 initialBackdropGoalPose = new Pose(blueMiddleBackdrop.getX(), blueMiddleBackdrop.getY(),Math.toRadians(270));
                 firstCycleBackdropGoalPose = new Pose(blueRightBackdrop.getX(), blueRightBackdrop.getY(), Math.toRadians(270));
                 secondCycleBackdropGoalPose = new Pose(blueRightBackdrop.getX(), blueRightBackdrop.getY(), Math.toRadians(270));
@@ -93,17 +93,17 @@ public class Blue_Close_Two_Two_Path extends OpMode {
         switch (navigation) {
             default:
             case "left":
-                initialScoreOnBackdrop = new Path(new BezierCurve(scoreSpikeMark.getLastControlPoint(), new Point(144-135, 98, Point.CARTESIAN), new Point(initialBackdropGoalPose.getX(), 106, Point.CARTESIAN), new Point(initialBackdropGoalPose)));
+                initialScoreOnBackdrop = new Path(new BezierCurve(scoreSpikeMark.getLastControlPoint(), new Point(144-135, 98, Point.CARTESIAN), new Point(initialBackdropGoalPose.getX(), initialBackdropGoalPose.getY(), Point.CARTESIAN), new Point(initialBackdropGoalPose)));
                 break;
             case "middle":
                 initialScoreOnBackdrop = new Path(new BezierLine(scoreSpikeMark.getLastControlPoint(), new Point(initialBackdropGoalPose)));
                 break;
             case "right":
-                initialScoreOnBackdrop = new Path(new BezierCurve(scoreSpikeMark.getLastControlPoint(), new Point(scoreSpikeMark.getLastControlPoint().getX(), 98, Point.CARTESIAN), new Point(initialBackdropGoalPose.getX(), 109.5, Point.CARTESIAN), new Point(initialBackdropGoalPose)));
+                initialScoreOnBackdrop = new Path(new BezierCurve(scoreSpikeMark.getLastControlPoint(), new Point(scoreSpikeMark.getLastControlPoint().getX(), scoreSpikeMark.getLastControlPoint().getY(), Point.CARTESIAN), new Point(initialBackdropGoalPose.getX(), initialBackdropGoalPose.getY(), Point.CARTESIAN), new Point(initialBackdropGoalPose)));
                 break;
         }
         //initialScoreOnBackdrop.setConstantHeadingInterpolation(Math.PI * 1.5);
-        initialScoreOnBackdrop.setLinearHeadingInterpolation(scoreSpikeMark.getEndTangent().getTheta(), Math.PI * 1.5, 0.5);
+        initialScoreOnBackdrop.setLinearHeadingInterpolation(scoreSpikeMark.getEndTangent().getTheta(), Math.toRadians(270), 0.5);
         initialScoreOnBackdrop.setPathEndTimeoutConstraint(2.5);
 
         switch (navigation) {
@@ -123,22 +123,22 @@ public class Blue_Close_Two_Two_Path extends OpMode {
         }
 
         firstCycleToStack = follower.pathBuilder()
-                .addPath(new BezierCurve(new Point(initialBackdropGoalPose), new Point(144-76.5, 106, Point.CARTESIAN), new Point(firstCycleStackPose.getX()+2, 79, Point.CARTESIAN)))
+                .addPath(new BezierCurve(new Point(initialBackdropGoalPose), new Point(144-76.5, 106, Point.CARTESIAN), new Point(firstCycleStackPose.getX(), firstCycleStackPose.getY(), Point.CARTESIAN)))
                 .setConstantHeadingInterpolation(firstCycleStackPose.getHeading())
-                .addPath(new BezierLine(new Point(firstCycleStackPose.getX(), 79, Point.CARTESIAN), new Point(firstCycleStackPose.getX(), 23, Point.CARTESIAN)))
+                .addPath(new BezierLine(new Point(firstCycleStackPose.getX(), firstCycleStackPose.getY(), Point.CARTESIAN), new Point(firstCycleStackPose.getX(), firstCycleStackPose.getY(), Point.CARTESIAN)))
                 .setConstantHeadingInterpolation(firstCycleStackPose.getHeading())
                 .setPathEndTimeoutConstraint(0)
                 .build();
 
         firstCycleStackGrab = follower.pathBuilder()
-                .addPath(new BezierLine(new Point(firstCycleStackPose.getX(), 32, Point.CARTESIAN), new Point(firstCycleStackPose)))
+                .addPath(new BezierLine(new Point(firstCycleStackPose.getX(), firstCycleStackPose.getX(), Point.CARTESIAN), new Point(firstCycleStackPose)))
                 .setConstantHeadingInterpolation(firstCycleStackPose.getHeading())
                 .build();
 
         firstCycleScoreOnBackdrop = follower.pathBuilder()
-                .addPath(new BezierLine(new Point(firstCycleStackPose), new Point(firstCycleStackPose.getX(), 79, Point.CARTESIAN)))
+                .addPath(new BezierLine(new Point(firstCycleStackPose), new Point(firstCycleStackPose.getX(), firstCycleStackPose.getY(), Point.CARTESIAN)))
                 .setConstantHeadingInterpolation(firstCycleStackPose.getHeading())
-                .addPath(new BezierCurve(new Point(firstCycleStackPose.getX()+2, 79, Point.CARTESIAN), new Point(144-76.5, 106, Point.CARTESIAN), new Point(firstCycleBackdropGoalPose)))
+                .addPath(new BezierCurve(new Point(firstCycleStackPose.getX(), firstCycleStackPose.getY(), Point.CARTESIAN), new Point(144-76.5, 106, Point.CARTESIAN), new Point(firstCycleBackdropGoalPose)))
                 .setConstantHeadingInterpolation(Math.PI * 1.5)
                 .setPathEndTimeoutConstraint(2.5)
                 .build();
@@ -171,7 +171,6 @@ public class Blue_Close_Two_Two_Path extends OpMode {
             case 14:
                 if (pathTimer.getElapsedTime() > 100) {
                     follower.followPath(firstCycleScoreOnBackdrop);
-                    setPathState(15);
                     break;
                 }
         }

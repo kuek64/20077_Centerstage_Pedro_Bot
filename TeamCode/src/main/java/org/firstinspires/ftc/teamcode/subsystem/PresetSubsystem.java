@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.subsystem;
 
-
+/*
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.SequentialAction;
@@ -20,13 +20,6 @@ public class PresetSubsystem {
 
 
     //------------------------------ Start Sequence ------------------------------//
-    public Action StartPos() {
-        return new SequentialAction(
-                ClawStartPos(),
-                LiftStartPos(),
-                GearStartPos()
-        );
-    }
 
     public Action GearStartPos() {
         return new SequentialAction(
@@ -46,10 +39,10 @@ public class PresetSubsystem {
         );
     }
 
-    public Action ClawStartPos() {
+    /*public Action ClawStartPos() {
         return new SequentialAction(
                 claw.closeClaws(),
-                claw.groundClaw()
+                claw.groundClawPos()
         );
     }
 
@@ -126,6 +119,7 @@ public class PresetSubsystem {
     }
 
     /* White Stack Start */
+/*
     public Action WhiteStackStart() {
         return new SequentialAction(
                 //GearWhiteStackStart(),
@@ -156,7 +150,7 @@ public class PresetSubsystem {
         );
     }
 
-    /* White Stack End */
+    /* White Stack End
     public Action WhiteStackEnd() {
         return new SequentialAction(
                 ClawWhiteStackEnd(),
@@ -186,35 +180,7 @@ public class PresetSubsystem {
 
 
     //------------------------------ Scoring Sequence ------------------------------//
-    public Action WhiteScoringPos() {
-        return new ParallelAction(
-                ClawWhiteScoringPos(),
-                GearWhiteScoringPos(),
-                LiftWhiteScoringPos()
-        );
-    }
 
-    public Action GearWhiteScoringPos() {
-        return new ParallelAction(
-                gear.whiteScoringGear()
-                //gear.waitForGear(),
-                //gear.stopGear()
-        );
-    }
-
-    public Action LiftWhiteScoringPos() {
-        return new ParallelAction(
-                lift.liftExtend_WhiteScoring()
-                //lift.waitForLift(),
-                //lift.stopLift()
-        );
-    }
-
-    public Action ClawWhiteScoringPos() {
-        return new SequentialAction(
-                claw.whiteScoringClaw()
-        );
-    }
 
     //------------------------------ Ground after White Scoring Sequence ------------------------------//
 
@@ -244,6 +210,6 @@ public class PresetSubsystem {
                 claw.groundClaw(),
                 claw.openClaws()
         );
-    }
-}
+    }*/
+//}
 
