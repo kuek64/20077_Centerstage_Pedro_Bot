@@ -35,10 +35,8 @@ public final class Blue_Close2_2 extends LinearOpMode {
     private GearRotationSubsystem gear;
     private PresetSubsystem presets;
     private LiftSubsystem lift;
-
-
     private Servo clawL, clawR, pivot;
-    private Follower follower;
+    private Follower fOllower;
     private PathChain firstCycleToStack, firstCycleStackGrab, firstCycleScoreOnBackdrop, secondCycleToStack, secondCycleStackGrab, secondCycleScoreOnBackdrop;
 
 
@@ -121,7 +119,7 @@ public final class Blue_Close2_2 extends LinearOpMode {
 
     public void buildPaths()
     {
-        firstCycleToStack = follower.pathBuilder()
+        firstCycleToStack = fOllower.pathBuilder()
                 .addPath(new BezierLine(new Point(yellowScoringPose1.getX()+0.0001, 32, Point.CARTESIAN), new Point(driveToWhitePose1)))
                 .setConstantHeadingInterpolation(yellowScoringPose1.getHeading())
                 .build();
@@ -129,6 +127,7 @@ public final class Blue_Close2_2 extends LinearOpMode {
 
     @Override
     public void runOpMode() {
+        fOllower.update();
         updatePoses();
         buildPaths();
         ClawSubsystem claw = new ClawSubsystem(hardwareMap);
@@ -169,7 +168,7 @@ public final class Blue_Close2_2 extends LinearOpMode {
                 telemetry.addData("location?", blocks[i].x);// this gives you just x*/
 
                 //----------------------------1----------------------------\\
-            follower.followPath(firstCycleToStack);
+            fOllower.followPath(firstCycleToStack);
                     Actions.runBlocking(
                             new SequentialAction(
                                     new ParallelAction(
