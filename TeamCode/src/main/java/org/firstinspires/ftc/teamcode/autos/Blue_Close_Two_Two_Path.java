@@ -14,8 +14,8 @@ import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.PathChain;
 import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.Point;
 import org.firstinspires.ftc.teamcode.pedroPathing.util.Timer;
 
-@Autonomous(name = "Blue Close 2+2", group = "Blue")
-public class Blue_Close_Two_Two extends OpMode {
+@Autonomous(name = "Blue Close 2+2 Path", group = "Blue")
+public class Blue_Close_Two_Two_Path extends OpMode {
 
     private Timer pathTimer, opmodeTimer, scanTimer;
 
