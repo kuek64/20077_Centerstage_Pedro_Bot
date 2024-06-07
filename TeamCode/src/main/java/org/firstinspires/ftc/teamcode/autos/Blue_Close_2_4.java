@@ -58,7 +58,7 @@ public class Blue_Close_2_4 extends OpMode {
     private Pose blueRightBackdrop = new Pose(-30.75+72, 60.75+72);
     private Pose redLeftBackdrop = new Pose(30.75+72, 60.75+72);
     private Pose redMiddleBackdrop = new Pose(36.75+72, 60.75+72);
-    private Pose redRightBackdrop = new Pose(42.875+72, 60.75+72);
+    private Pose redRightBackdrop = new Pose(42.875+72, 60.74+72);
 
     // white pixel stack locations
     private Pose redOuterStack = new Pose(36+72, -72+72);
