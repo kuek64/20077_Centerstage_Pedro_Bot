@@ -225,6 +225,7 @@ public class Blue_Close_2_4 extends OpMode {
         follower.setStartingPose(startPose);
 
         scanTimer.resetTimer();
+
     }
 
     @Override
@@ -235,6 +236,7 @@ public class Blue_Close_2_4 extends OpMode {
 
     @Override
     public void start() {
+        navigation = "left";
         setBackdropGoalPose();
         buildPaths();
         opmodeTimer.resetTimer();
