@@ -40,21 +40,17 @@ public final class Blue_Close2_2 extends LinearOpMode {
     private Servo clawL, clawR, pivot;
     private Follower follower;
 
-    private Pose startPose = new Pose(-62, 12, 0);
-    private Pose yellowScoringPose1 = new Pose(-36, 30, Math.toRadians(270));
-    private Pose yellowScoringPose2 = new Pose(-30, 22, Math.toRadians(270));
-    private Pose yellowScoringPose3 = new Pose(-36, 8, Math.toRadians(270));
-    private Pose yellowScoringOverridePose1 = new Pose(-42, 45, Math.toRadians(270));
-    private Pose yellowScoringOverridePose2 = new Pose(-36, 45, Math.toRadians(270));
-    private Pose yellowScoringOverridePose3 = new Pose(-27, 45, Math.toRadians(270));
-    private Pose driveToWhitePose1 = new Pose(-42, 51.5, Math.toRadians(270));//-38
-    private Pose driveToWhitePose2 = new Pose(-36, 51.5, Math.toRadians(270));
-    private Pose driveToWhitePose3 = new Pose(-27, 51.5, Math.toRadians(270));
-    private Pose inTrussPose = new Pose(-60, 24, Math.toRadians(270));
-    private Pose throughWhiteTruss = new Pose(-60, -24, Math.toRadians(270));
-    private Pose whiteTrussPose = new Pose(-35.5,-37, Math.toRadians(270));
-    private Pose whiteScoringPose = new Pose(-60, 24, Math.toRadians(270));
-    private Pose parkingPose = new Pose(-40.5, 52.75, Math.toRadians(90));
+    private Pose startPose = new Pose(-62+72, 12+72, 0);
+    private Pose yellowScoringPose1 = new Pose(-36+72, 30+72, Math.toRadians(270));
+    private Pose yellowScoringPose2 = new Pose(-30+72, 22+72, Math.toRadians(270));
+    private Pose yellowScoringPose3 = new Pose(-36+72, 8+72, Math.toRadians(270));
+    private Pose driveToWhitePose1 = new Pose(-42+72, 51.5+72, Math.toRadians(270));//-38
+    private Pose driveToWhitePose2 = new Pose(-36+72, 51.5+72, Math.toRadians(270));
+    private Pose driveToWhitePose3 = new Pose(-27+72, 51.5+72, Math.toRadians(270));
+    private Pose inTrussPose = new Pose(-60+72, 24+72, Math.toRadians(270));
+    private Pose throughWhiteTruss = new Pose(-60+72, -24+72, Math.toRadians(270));
+    private Pose whiteTrussPose = new Pose(-35.5+72,-37+72, Math.toRadians(270));
+    private Pose parkingPose = new Pose(-40.5+72, 52.75+72, Math.toRadians(270));
 
     Path purplePath1 = new Path(
             new BezierLine(new Point(startPose),
@@ -98,7 +94,7 @@ public final class Blue_Close2_2 extends LinearOpMode {
             new Point(throughWhiteTruss),
             new Point(whiteTrussPose)));
 
-    Path backwhiteCycle1Path1 = new Path(
+    Path backwhiteCycle1Path = new Path(
             new BezierCurve(new Point(whiteTrussPose),
                     new Point(throughWhiteTruss),
                     new Point(inTrussPose),
@@ -106,11 +102,24 @@ public final class Blue_Close2_2 extends LinearOpMode {
 
     Path parkingPath = new Path(
             new BezierLine(new Point(yellowScoringPose3),
-                    new Point(throughWhiteTruss)));
-
+            new Point(parkingPose)));
+    public void updatePoses()
+    {
+        purplePath1.setConstantHeadingInterpolation(yellowScoringPose1.getHeading());
+        purplePath2.setConstantHeadingInterpolation(yellowScoringPose2.getHeading());
+        purplePath3.setConstantHeadingInterpolation(yellowScoringPose3.getHeading());
+        yellowPath1.setConstantHeadingInterpolation(yellowScoringPose1.getHeading());
+        yellowPath2.setConstantHeadingInterpolation(yellowScoringPose2.getHeading());
+        yellowPath3.setConstantHeadingInterpolation(yellowScoringPose3.getHeading());
+        towhiteCycle1Path1.setConstantHeadingInterpolation(driveToWhitePose1.getHeading());
+        towhiteCycle1Path2.setConstantHeadingInterpolation(driveToWhitePose2.getHeading());
+        towhiteCycle1Path3.setConstantHeadingInterpolation(driveToWhitePose3.getHeading());
+        backwhiteCycle1Path.setConstantHeadingInterpolation(yellowScoringPose3.getHeading());
+    }
 
     @Override
     public void runOpMode() {
+        updatePoses();
         ClawSubsystem claw = new ClawSubsystem(hardwareMap);
         huskyLens = hardwareMap.get(HuskyLens.class, "huskyLens");
         clawL = hardwareMap.get(Servo.class, "clawL");
@@ -180,7 +189,7 @@ public final class Blue_Close2_2 extends LinearOpMode {
                                     ),
                                     new SequentialAction(
                                             //presets.WhiteStack(),
-                                            new FollowPathAction(follower, backwhiteCycle1Path1, false),
+                                            new FollowPathAction(follower, backwhiteCycle1Path, false),
                                             new SleepAction(0.5)
                                             //presets.WhiteScoringPos()
                                             )
