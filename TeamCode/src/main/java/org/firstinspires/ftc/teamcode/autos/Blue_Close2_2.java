@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.internal.system.Deadline;
-import org.firstinspires.ftc.teamcode.pedroPathing.follower.*;
+import org.firstinspires.ftc.teamcode.pedroPathing.follower.Follower;
 import org.firstinspires.ftc.teamcode.pedroPathing.localization.Pose;
 import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.BezierCurve;
 import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.BezierLine;
@@ -35,8 +35,6 @@ public final class Blue_Close2_2 extends LinearOpMode {
     private GearRotationSubsystem gear;
     private PresetSubsystem presets;
     private LiftSubsystem lift;
-
-
     private Servo clawL, clawR, pivot;
     private Follower follower;
     private PathChain firstCycleToStack, firstCycleStackGrab, firstCycleScoreOnBackdrop, secondCycleToStack, secondCycleStackGrab, secondCycleScoreOnBackdrop;
@@ -125,11 +123,11 @@ public final class Blue_Close2_2 extends LinearOpMode {
                 .addPath(new BezierLine(new Point(yellowScoringPose1.getX()+0.0001, 32, Point.CARTESIAN), new Point(driveToWhitePose1)))
                 .setConstantHeadingInterpolation(yellowScoringPose1.getHeading())
                 .build();
-        follower.update();
     }
 
     @Override
     public void runOpMode() {
+        follower.update();
         updatePoses();
         buildPaths();
         ClawSubsystem claw = new ClawSubsystem(hardwareMap);
@@ -172,9 +170,52 @@ public final class Blue_Close2_2 extends LinearOpMode {
                 telemetry.addData("location?", blocks[i].x);// this gives you just x*/
 
                 //----------------------------1----------------------------\\
-
             follower.followPath(firstCycleToStack);
+                    Actions.runBlocking(
+                            new SequentialAction(
+                                    new ParallelAction(
+                                            new FollowPathAction(follower, purplePath1, false),
+                                            new SleepAction(0.5)
 
+                                    ),
+                                    claw.openLClaw(),
+                                    //new SleepAction(0.35),
+                                    new ParallelAction(
+                                            new ParallelAction(
+                                                    //presets.ScoringPos(),
+                                                    new FollowPathAction(follower, yellowPath1, false),
+                                                    new SleepAction(0.5)
+                                            ),
+                                            claw.closeLClaw()
+                                    ),
+                                    //new SleepAction(.1),
+                                    //claw.openRClaw(),
+                                    //new SleepAction(.25),
+                                    new ParallelAction(
+                                            new SequentialAction(
+                                                    //presets.GroundPos(),
+                                                    //claw.openClaws(),
+                                                    //claw.whiteGroundClaw()
+                                            ),
+                                            new FollowPathAction(follower, towhiteCycle1Path1, false),
+                                            new SleepAction(0.5)
+                                    ),
+                                    new SequentialAction(
+                                            //presets.WhiteStack(),
+                                            new FollowPathAction(follower, backwhiteCycle1Path, false),
+                                            new SleepAction(0.5)
+                                            //presets.WhiteScoringPos()
+                                            )
+                                    ),
+
+                                    new SequentialAction(
+                                            new SleepAction(.1),
+                                            claw.openClaws(),
+                                            new SleepAction(.25),
+                                            new FollowPathAction(follower, parkingPath, false),
+                                            presets.WhiteGroundPos()
+                                    )
+                            );
                     sleep(400000);
                 }
 
