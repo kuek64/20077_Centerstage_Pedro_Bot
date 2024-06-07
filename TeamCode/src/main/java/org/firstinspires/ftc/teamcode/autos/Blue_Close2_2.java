@@ -156,15 +156,15 @@ public final class Blue_Close2_2 extends LinearOpMode {
                                             new SleepAction(0.5)
 
                                     ),
-                                    //claw.openLClaw(),
+                                    claw.openLClaw(),
                                     //new SleepAction(0.35),
                                     new ParallelAction(
                                             new ParallelAction(
                                                     //presets.ScoringPos(),
                                                     new FollowPathAction(follower, yellowPath1, false),
                                                     new SleepAction(0.5)
-                                            )
-                                            //claw.closeLClaw()
+                                            ),
+                                            claw.closeLClaw()
                                     ),
                                     //new SleepAction(.1),
                                     //claw.openRClaw(),
