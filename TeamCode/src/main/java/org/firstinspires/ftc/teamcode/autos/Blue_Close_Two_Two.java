@@ -56,7 +56,7 @@ public class Blue_Close_Two_Two extends OpMode {
                 secondCycleBackdropGoalPose = new Pose(blueRightBackdrop.getX(), blueRightBackdrop.getY(), Math.toRadians(270));
                 break;
             case "middle":
-                spikeMarkGoalPose = new Pose(blueLeftSideMiddleSpikeMark.getX(), blueLeftSideMiddleSpikeMark.getY()+3, Math.toRadians(270));
+                spikeMarkGoalPose = new Pose(blueLeftSideMiddleSpikeMark.getX(), blueLeftSideMiddleSpikeMark.getY(), Math.toRadians(270));
                 initialBackdropGoalPose = new Pose(blueMiddleBackdrop.getX(), blueMiddleBackdrop.getY(),Math.toRadians(270));
                 firstCycleBackdropGoalPose = new Pose(blueRightBackdrop.getX(), blueRightBackdrop.getY(), Math.toRadians(270));
                 secondCycleBackdropGoalPose = new Pose(blueRightBackdrop.getX(), blueRightBackdrop.getY(), Math.toRadians(270));
@@ -151,25 +151,25 @@ public class Blue_Close_Two_Two extends OpMode {
                 setPathState(11);
                 break;
             case 11:
-                if (pathTimer.getElapsedTime() > 0.5) {
+                if (pathTimer.getElapsedTime() > 4) {
                     follower.followPath(initialScoreOnBackdrop);
                     setPathState(12);
                     break;
                 }
             case 12:
-                if (pathTimer.getElapsedTime() > 0.5) {
+                if (pathTimer.getElapsedTime() > 8) {
                     follower.followPath(firstCycleToStack);
                     setPathState(13);
                     break;
                 }
             case 13:
-                if (pathTimer.getElapsedTime() > 0.5) {
+                if (pathTimer.getElapsedTime() > 12) {
                     follower.followPath(firstCycleStackGrab);
                     setPathState(14);
                     break;
                 }
             case 14:
-                if (pathTimer.getElapsedTime() > 0.5) {
+                if (pathTimer.getElapsedTime() > 16) {
                     follower.followPath(firstCycleScoreOnBackdrop);
                     setPathState(15);
                     break;
