@@ -151,25 +151,25 @@ public class Blue_Close_Two_Two_Path extends OpMode {
                 setPathState(11);
                 break;
             case 11:
-                if (pathTimer.getElapsedTime() > 0.5) {
+                if (pathTimer.getElapsedTime() > 100) {
                     follower.followPath(initialScoreOnBackdrop);
                     setPathState(12);
                     break;
                 }
             case 12:
-                if (pathTimer.getElapsedTime() > 0.5) {
+                if (pathTimer.getElapsedTime() > 100) {
                     follower.followPath(firstCycleToStack);
                     setPathState(13);
                     break;
                 }
             case 13:
-                if (pathTimer.getElapsedTime() > 0.5) {
+                if (pathTimer.getElapsedTime() > 100) {
                     follower.followPath(firstCycleStackGrab);
                     setPathState(14);
                     break;
                 }
             case 14:
-                if (pathTimer.getElapsedTime() > 0.5) {
+                if (pathTimer.getElapsedTime() > 100) {
                     follower.followPath(firstCycleScoreOnBackdrop);
                     setPathState(15);
                     break;
