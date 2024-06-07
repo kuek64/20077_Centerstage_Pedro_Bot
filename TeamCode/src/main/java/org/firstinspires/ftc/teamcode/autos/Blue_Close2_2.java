@@ -15,6 +15,7 @@ import org.firstinspires.ftc.teamcode.pedroPathing.localization.Pose;
 import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.BezierCurve;
 import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.BezierLine;
 import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.Path;
+import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.PathChain;
 import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.Point;
 import org.firstinspires.ftc.teamcode.pedroPathing.util.FollowPathAction;
 import org.firstinspires.ftc.teamcode.subsystem.ClawSubsystem;
@@ -38,6 +39,8 @@ public final class Blue_Close2_2 extends LinearOpMode {
 
     private Servo clawL, clawR, pivot;
     private Follower follower;
+    private PathChain firstCycleToStack, firstCycleStackGrab, firstCycleScoreOnBackdrop, secondCycleToStack, secondCycleStackGrab, secondCycleScoreOnBackdrop;
+
 
     private Pose startPose = new Pose(-62+72, 12+72, 0);
     private Pose yellowScoringPose1 = new Pose(-36+72, 30+72, Math.toRadians(270));
@@ -116,9 +119,19 @@ public final class Blue_Close2_2 extends LinearOpMode {
         backwhiteCycle1Path.setConstantHeadingInterpolation(yellowScoringPose3.getHeading());
     }
 
+    public void buildPaths()
+    {
+        firstCycleToStack = follower.pathBuilder()
+                .addPath(new BezierCurve(new Point(yellowScoringPose1), new Point(144-76.5, 106, Point.CARTESIAN), new Point(driveToWhitePose1.getX()+2, 79, Point.CARTESIAN)))
+                .setConstantHeadingInterpolation(yellowScoringPose1.getHeading())
+                .setPathEndTimeoutConstraint(0)
+                .build();
+    }
+
     @Override
     public void runOpMode() {
         updatePoses();
+        buildPaths();
         ClawSubsystem claw = new ClawSubsystem(hardwareMap);
         //huskyLens = hardwareMap.get(HuskyLens.class, "huskyLens");
         clawL = hardwareMap.get(Servo.class, "clawL");
@@ -157,6 +170,7 @@ public final class Blue_Close2_2 extends LinearOpMode {
                 telemetry.addData("location?", blocks[i].x);// this gives you just x*/
 
                 //----------------------------1----------------------------\\
+            follower.followPath(firstCycleToStack);
                     Actions.runBlocking(
                             new SequentialAction(
                                     new ParallelAction(
