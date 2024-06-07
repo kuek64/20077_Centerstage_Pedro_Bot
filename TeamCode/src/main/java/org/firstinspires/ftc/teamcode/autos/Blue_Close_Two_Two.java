@@ -27,9 +27,9 @@ public class Blue_Close_Two_Two extends OpMode {
     private Pose blueLeftSideRightSpikeMark = new Pose(-36+72, 8+72);
 
     //Backdrop zone locations
-    private Pose blueLeftBackdrop = new Pose(-42, 51.5+72);
-    private Pose blueMiddleBackdrop = new Pose(-36, 51.5+72);
-    private Pose blueRightBackdrop = new Pose(-27, 51.5+72);
+    private Pose blueLeftBackdrop = new Pose(-42+72, 51.5+72);
+    private Pose blueMiddleBackdrop = new Pose(-36+72, 51.5+72);
+    private Pose blueRightBackdrop = new Pose(-27+72, 51.5+72);
 
     // white pixel stack locations
     private Pose blueOuterStack = new Pose(-35.5+72, -37+72);
