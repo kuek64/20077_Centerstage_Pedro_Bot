@@ -17,7 +17,6 @@ import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.BezierCurve;
 import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.BezierLine;
 import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.Path;
 import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.Point;
-import org.firstinspires.ftc.teamcode.pedroPathing.util.DrivePoseLoggingAction;
 import org.firstinspires.ftc.teamcode.pedroPathing.util.FollowPathAction;
 import org.firstinspires.ftc.teamcode.subsystem.ClawSubsystem;
 import org.firstinspires.ftc.teamcode.subsystem.GearRotationSubsystem;
@@ -81,20 +80,34 @@ public final class Blue_Close2_2 extends LinearOpMode {
             new BezierLine(new Point(yellowScoringPose3),
             new Point(driveToWhitePose3)));
 
-    Path whitePath1 = new Path(
+    Path towhiteCycle1Path1 = new Path(
             new BezierCurve(new Point(driveToWhitePose1),
             new Point(inTrussPose),
-            new Point(throughWhiteTruss)));
+            new Point(throughWhiteTruss),
+            new Point(whiteTrussPose)));
 
-    Path whitePath2 = new Path(
+    Path towhiteCycle1Path2 = new Path(
             new BezierCurve(new Point(driveToWhitePose2),
             new Point(inTrussPose),
-            new Point(throughWhiteTruss)));
+            new Point(throughWhiteTruss),
+            new Point(whiteTrussPose)));
 
-    Path whitePath3 = new Path(
+    Path towhiteCycle1Path3 = new Path(
             new BezierCurve(new Point(driveToWhitePose3),
             new Point(inTrussPose),
-            new Point(throughWhiteTruss)));
+            new Point(throughWhiteTruss),
+            new Point(whiteTrussPose)));
+
+    Path backwhiteCycle1Path1 = new Path(
+            new BezierCurve(new Point(whiteTrussPose),
+                    new Point(throughWhiteTruss),
+                    new Point(inTrussPose),
+                    new Point(yellowScoringPose3)));
+
+    Path parkingPath = new Path(
+            new BezierLine(new Point(yellowScoringPose3),
+                    new Point(throughWhiteTruss)));
+
 
     @Override
     public void runOpMode() {
@@ -136,14 +149,10 @@ public final class Blue_Close2_2 extends LinearOpMode {
                 telemetry.addData("location?", blocks[i].x);// this gives you just x
 
                 //----------------------------1----------------------------\\
-                if (blocks[i].x < 100 && blocks[i].id == 2 && blocks[i].y < 200) {
-
                     Actions.runBlocking(
                             new SequentialAction(
                                     new ParallelAction(
-                                            new DrivePoseLoggingAction(follower, "purple_path_1_begin", true),
                                             new FollowPathAction(follower, purplePath1, false),
-                                            new DrivePoseLoggingAction(follower, "purple_path_1_end"),
                                             new SleepAction(0.5)
 
                                     ),
@@ -152,11 +161,9 @@ public final class Blue_Close2_2 extends LinearOpMode {
                                     new ParallelAction(
                                             new ParallelAction(
                                                     //presets.ScoringPos(),
-                                                    new DrivePoseLoggingAction(follower, "yellow_path_1_begin", true),
                                                     new FollowPathAction(follower, yellowPath1, false),
-                                                    new DrivePoseLoggingAction(follower, "yellow_path_1_end"),
                                                     new SleepAction(0.5)
-                                            ),
+                                            )
                                             //claw.closeLClaw()
                                     ),
                                     //new SleepAction(.1),
@@ -168,15 +175,14 @@ public final class Blue_Close2_2 extends LinearOpMode {
                                                     //claw.openClaws(),
                                                     //claw.whiteGroundClaw()
                                             ),
-                                            driveToWhiteAction1
+                                            new FollowPathAction(follower, towhiteCycle1Path1, false),
+                                            new SleepAction(0.5)
                                     ),
                                     new SequentialAction(
-                                            presets.WhiteStack(),
-                                            new SleepAction(0.25),
-                                            whiteTrussAction,
-                                            new ParallelAction(
-                                                    whiteScoringAction,
-                                                    presets.WhiteScoringPos()
+                                            //presets.WhiteStack(),
+                                            new FollowPathAction(follower, backwhiteCycle1Path1, false),
+                                            new SleepAction(0.5)
+                                            //presets.WhiteScoringPos()
                                             )
                                     ),
 
@@ -184,17 +190,16 @@ public final class Blue_Close2_2 extends LinearOpMode {
                                             new SleepAction(.1),
                                             claw.openClaws(),
                                             new SleepAction(.25),
-                                            parkingAction,
+                                            new FollowPathAction(follower, parkingPath, false),
                                             presets.WhiteGroundPos()
                                     )
-                            )
-                    );
+                            );
                     sleep(400000);
                 }
 
 
                 //----------------------------2----------------------------\\
-                if (blocks[i].x > 100 && blocks[i].x < 200 && blocks[i].id == 2 && blocks[i].y < 200) {
+                /*if (blocks[i].x > 100 && blocks[i].x < 200 && blocks[i].id == 2 && blocks[i].y < 200) {
                     Actions.runBlocking(
                             new SequentialAction(
                                     new ParallelAction(
@@ -321,7 +326,7 @@ public final class Blue_Close2_2 extends LinearOpMode {
                     );
                     sleep(400000);
                 }
-            }
+            }*/
         }
 
     }
