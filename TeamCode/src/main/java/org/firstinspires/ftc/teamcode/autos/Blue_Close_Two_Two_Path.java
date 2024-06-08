@@ -36,8 +36,8 @@ public class Blue_Close_Two_Two_Path extends OpMode {
     private Pose blueWhiteBackdrop = new Pose(46+15, 51.5+72, Math.toRadians(270));
 
     //Through Truss
-    private Pose blueTopTruss = new Pose(-60+72, 12+72);
-    private Pose blueBottomTruss = new Pose(-60+72, -36+72);
+    private Pose blueTopTruss = new Pose(12, 84);
+    private Pose blueBottomTruss = new Pose(12, 36);
 
     // white pixel stack locations
     private Pose blueLeftStack = new Pose(-36+72+24, -37+72);
@@ -126,10 +126,17 @@ public class Blue_Close_Two_Two_Path extends OpMode {
                 }
                 break;
             case 15:
-                follower.followPath(firstCycleStack, true);
-                setPathState(16);
+                if(!follower.isBusy()) {
+                    follower.followPath(firstCycleStack, true);
+                    setPathState(16);
+                }
                 break;
             case 16:
+                if(!follower.isBusy()) {
+                    follower.breakFollowing();
+                    setPathState(-1);
+                }
+                break;
         }
     }
     public void setPathState(int state) {
