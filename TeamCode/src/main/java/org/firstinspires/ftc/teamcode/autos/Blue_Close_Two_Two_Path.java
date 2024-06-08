@@ -124,8 +124,12 @@ public class Blue_Close_Two_Two_Path extends OpMode {
                 if (pathTimer.getElapsedTimeSeconds() > 3) {
                     setPathState(15);
                 }
+                break;
             case 15:
                 follower.followPath(firstCycleStack, true);
+                setPathState(16);
+                break;
+            case 16:
         }
     }
     public void setPathState(int state) {
