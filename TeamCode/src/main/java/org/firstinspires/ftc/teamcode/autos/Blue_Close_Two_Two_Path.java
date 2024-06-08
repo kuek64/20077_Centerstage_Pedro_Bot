@@ -42,7 +42,7 @@ public class Blue_Close_Two_Two_Path extends OpMode {
     // white pixel stack locations
     private Pose blueLeftStack = new Pose(-36+72+24, -37+72);
     private Pose blueMiddleStack = new Pose(-36+72+12, -37+72);
-    private Pose blueRightStack = new Pose(-36+72, -37+72);
+    private Pose blueRightStack = new Pose(-36+72, -37+72, Math.toRadians(270));
 
     private Pose spikeMarkGoalPose, initialBackdropGoalPose, firstCycleStackPose, firstCycleBackdropGoalPose, secondCycleStackPose, secondCycleBackdropGoalPose;
 
@@ -52,7 +52,7 @@ public class Blue_Close_Two_Two_Path extends OpMode {
     private Follower follower;
 
     private Path scoreSpikeMark, initialScoreOnBackdrop;
-    private PathChain firstCycleStack;
+    private PathChain firstCycleStackTo, firstCycleStackBack;
 
     private int pathState;
 
@@ -87,13 +87,23 @@ public class Blue_Close_Two_Two_Path extends OpMode {
         initialScoreOnBackdrop.setLinearHeadingInterpolation(spikeMarkGoalPose.getHeading(), initialBackdropGoalPose.getHeading());
         initialScoreOnBackdrop.setPathEndTimeoutConstraint(0);
 
-        firstCycleStack = follower.pathBuilder()
+        firstCycleStackTo = follower.pathBuilder()
                 .addPath(new BezierLine(new Point(firstCycleBackdropGoalPose), new Point(blueTopTruss)))
                 .setConstantHeadingInterpolation(firstCycleBackdropGoalPose.getHeading())
                 .addPath(new BezierLine(new Point(blueTopTruss), new Point(blueBottomTruss)))
                 .setConstantHeadingInterpolation(firstCycleBackdropGoalPose.getHeading())
                 .addPath(new BezierLine(new Point(blueBottomTruss), new Point(blueRightStack)))
                 .setConstantHeadingInterpolation(firstCycleBackdropGoalPose.getHeading())
+                .setPathEndTimeoutConstraint(0)
+                .build();
+
+        firstCycleStackBack = follower.pathBuilder()
+                .addPath(new BezierLine(new Point(blueRightStack), new Point(blueBottomTruss)))
+                .setConstantHeadingInterpolation(blueWhiteBackdrop.getHeading())
+                .addPath(new BezierLine(new Point(blueBottomTruss), new Point(blueTopTruss)))
+                .setConstantHeadingInterpolation(blueWhiteBackdrop.getHeading())
+                .addPath(new BezierLine(new Point(blueTopTruss), new Point(blueWhiteBackdrop)))
+                .setConstantHeadingInterpolation(blueWhiteBackdrop.getHeading())
                 .setPathEndTimeoutConstraint(0)
                 .build();
     }
@@ -127,11 +137,22 @@ public class Blue_Close_Two_Two_Path extends OpMode {
                 break;
             case 15:
                 if(!follower.isBusy()) {
-                    follower.followPath(firstCycleStack, true);
+                    follower.followPath(firstCycleStackTo, true);
                     setPathState(16);
                 }
                 break;
             case 16:
+                if (pathTimer.getElapsedTimeSeconds() > 3) {
+                    setPathState(17);
+                }
+                break;
+            case 17:
+                if(!follower.isBusy()) {
+                    follower.followPath(firstCycleStackBack, true);
+                    setPathState(18);
+                }
+                break;
+            case 18:
                 if(!follower.isBusy()) {
                     follower.breakFollowing();
                     setPathState(-1);
