@@ -7,8 +7,6 @@ import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.teamcode.pedroPathing.util.SingleRunAction;
-
 
 public class ClawSubsystem {
 
@@ -24,23 +22,124 @@ public class ClawSubsystem {
     double whiteGroundClaw = 0.85;
     double whiteScoringClaw = 0.75; //.725
 
-    public SingleRunAction closeRClaw, closeLClaw, closeClaws, openLClaw, openRClaw, openClaws, groundClawPos, scoringClawPos, whiteGroundClawPos;
-
     public ClawSubsystem(HardwareMap hardwareMap) {
         pivot = hardwareMap.get(Servo.class, "pivot");
         clawL = hardwareMap.get(Servo.class, "clawL");
         clawR = hardwareMap.get(Servo.class, "clawR");
-
-        closeLClaw = new SingleRunAction(() ->clawL.setPosition(closedL));
-        closeRClaw = new SingleRunAction(() ->clawR.setPosition(closedR));
-        closeClaws = new SingleRunAction(() ->clawR.setPosition(closedR));
-        openLClaw = new SingleRunAction(() -> {
-            clawR.setPosition(closedR); clawL.setPosition(closedL);
-        });
-        openRClaw = new SingleRunAction(() ->clawR.setPosition(closedR));
-        openClaws = new SingleRunAction(() ->clawR.setPosition(closedR));
-        groundClawPos = new SingleRunAction(() -> clawR.setPosition(closedR));
-        scoringClawPos = new SingleRunAction(() -> clawR.setPosition(closedR));
-        whiteGroundClawPos = new SingleRunAction(() -> clawR.setPosition(closedR));
     }
+
+    //------------------------------Close Claws------------------------------//
+    public void closeLClaw() {
+            clawL.setPosition(closedL);
+        }
+
+
+    public class closeRClaw implements Action {
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            clawR.setPosition(closedR);
+            return false;
+        }
+    }
+
+    public Action closeRClaw() {
+        return new closeRClaw();
+    }
+
+    public class closeClaws implements Action {
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            clawL.setPosition(closedL);
+            clawR.setPosition(closedR);
+            return false;
+        }
+    }
+
+    public Action closeClaws() {
+        return new closeClaws();
+    }
+
+    //------------------------------Open Claws------------------------------//
+    public void openLClaw(double openL) {
+        clawL.setPosition(openL);
+    }
+
+
+    public class openRClaw implements Action {
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            clawR.setPosition(openR);
+            return false;
+        }
+    }
+
+    public Action openRClaw() {
+        return new openRClaw();
+    }
+
+    public class openClaws implements Action {
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            clawL.setPosition(openL);
+            clawR.setPosition(openR);
+            return false;
+        }
+    }
+
+    public Action openClaws() {
+        return new openClaws();
+    }
+
+    //------------------------------Claw Rotate------------------------------//
+
+    public class groundClaw implements Action {
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            pivot.setPosition(groundClaw);
+            return false;
+        }
+    }
+
+    public Action groundClaw() {
+        return new groundClaw();
+    }
+
+    public class scoringClaw implements Action {
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            pivot.setPosition(scoringClaw);
+            return false;
+        }
+    }
+    public Action scoringClaw() {
+        return new scoringClaw();
+    }
+
+
+    public class whiteGroundClaw implements Action {
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            pivot.setPosition(whiteGroundClaw);
+            return false;
+        }
+    }
+
+    public Action whiteGroundClaw() {
+        return new whiteGroundClaw();
+    }
+
+
+
+    public class whiteScoringClaw implements Action {
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            pivot.setPosition(whiteScoringClaw);
+            return false;
+        }
+    }
+
+    public Action whiteScoringClaw() {
+        return new whiteScoringClaw();
+    }
+
 }
