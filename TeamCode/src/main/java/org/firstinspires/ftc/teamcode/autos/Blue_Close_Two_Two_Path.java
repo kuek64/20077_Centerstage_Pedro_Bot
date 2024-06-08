@@ -8,6 +8,7 @@ import org.firstinspires.ftc.teamcode.pedroPathing.follower.Follower;
 import org.firstinspires.ftc.teamcode.pedroPathing.localization.Pose;
 import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.BezierCurve;
 import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.BezierLine;
+import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.BezierPoint;
 import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.MathFunctions;
 import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.Path;
 import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.PathChain;
@@ -24,17 +25,24 @@ public class Blue_Close_Two_Two_Path extends OpMode {
     private String navigation;
 
     //Spike mark locations
-    private Pose blueLeftSideLeftSpikeMark = new Pose(-36+72, 30+72);
+    private Pose blueLeftSideLeftSpikeMark = new Pose(51, 30+72);
     private Pose blueLeftSideMiddleSpikeMark = new Pose(-30+72, 22+72);
     private Pose blueLeftSideRightSpikeMark = new Pose(-36+72, 8+72);
 
     //Backdrop zone locations
-    private Pose blueLeftBackdrop = new Pose(-42+72, 51.5+72);
+    private Pose blueLeftBackdrop = new Pose(46, 51.5+72);
     private Pose blueMiddleBackdrop = new Pose(-36+72, 51.5+72);
     private Pose blueRightBackdrop = new Pose(-27+72, 51.5+72);
+    private Pose blueWhiteBackdrop = new Pose(46+15, 51.5+72, Math.toRadians(270));
+
+    //Through Truss
+    private Pose blueTopTruss = new Pose(-60+72, 12+72);
+    private Pose blueBottomTruss = new Pose(-60+72, -36+72);
 
     // white pixel stack locations
-    private Pose blueOuterStack = new Pose(-35.5+72, -37+72);
+    private Pose blueLeftStack = new Pose(-36+72+24, -37+72);
+    private Pose blueMiddleStack = new Pose(-36+72+12, -37+72);
+    private Pose blueRightStack = new Pose(-36+72, -37+72);
 
     private Pose spikeMarkGoalPose, initialBackdropGoalPose, firstCycleStackPose, firstCycleBackdropGoalPose, secondCycleStackPose, secondCycleBackdropGoalPose;
 
@@ -43,8 +51,8 @@ public class Blue_Close_Two_Two_Path extends OpMode {
 
     private Follower follower;
 
-    private Path scoreSpikeMark, initialScoreOnBackdrop, driveToWhiteStack;
-    private PathChain firstCycleToStack, firstCycleStackGrab, firstCycleScoreOnBackdrop;
+    private Path scoreSpikeMark, initialScoreOnBackdrop;
+    private PathChain firstCycleStack;
 
     private int pathState;
 
@@ -54,20 +62,18 @@ public class Blue_Close_Two_Two_Path extends OpMode {
             case "left":
                 spikeMarkGoalPose = new Pose(blueLeftSideLeftSpikeMark.getX(), blueLeftSideLeftSpikeMark.getY(), Math.toRadians(270));
                 initialBackdropGoalPose = new Pose(blueLeftBackdrop.getX(), blueLeftBackdrop.getY(), Math.toRadians(270));
-                firstCycleBackdropGoalPose = new Pose(blueRightBackdrop.getX(), blueRightBackdrop.getY(), Math.toRadians(270));
-                secondCycleBackdropGoalPose = new Pose(blueRightBackdrop.getX(), blueRightBackdrop.getY(), Math.toRadians(270));
+                firstCycleBackdropGoalPose = new Pose(blueLeftBackdrop.getX(), blueLeftBackdrop.getY(), Math.toRadians(270));
+
                 break;
             case "middle":
                 spikeMarkGoalPose = new Pose(blueLeftSideMiddleSpikeMark.getX(), blueLeftSideMiddleSpikeMark.getY()+3, Math.toRadians(270));
                 initialBackdropGoalPose = new Pose(blueMiddleBackdrop.getX(), blueMiddleBackdrop.getY(),Math.toRadians(270));
-                firstCycleBackdropGoalPose = new Pose(blueRightBackdrop.getX(), blueRightBackdrop.getY(), Math.toRadians(270));
-                secondCycleBackdropGoalPose = new Pose(blueRightBackdrop.getX(), blueRightBackdrop.getY(), Math.toRadians(270));
+                firstCycleBackdropGoalPose = new Pose(blueMiddleBackdrop.getX(), blueMiddleBackdrop.getY(), Math.toRadians(270));
                 break;
             case "right":
                 spikeMarkGoalPose = new Pose(blueLeftSideRightSpikeMark.getX(), blueLeftSideRightSpikeMark.getY(), Math.toRadians(270));
                 initialBackdropGoalPose = new Pose(blueRightBackdrop.getX(), blueRightBackdrop.getY(), Math.toRadians(270));
-                firstCycleBackdropGoalPose = new Pose(blueMiddleBackdrop.getX(), blueRightBackdrop.getY(), Math.toRadians(270));
-                secondCycleBackdropGoalPose = new Pose(blueRightBackdrop.getX(), blueRightBackdrop.getY(), Math.toRadians(270));
+                firstCycleBackdropGoalPose = new Pose(blueRightBackdrop.getX(), blueRightBackdrop.getY(), Math.toRadians(270));
                 break;
         }
     }
@@ -75,29 +81,51 @@ public class Blue_Close_Two_Two_Path extends OpMode {
     public void buildPaths() {
         scoreSpikeMark = new Path(new BezierLine(new Point(startPose), new Point(spikeMarkGoalPose)));
         scoreSpikeMark.setConstantHeadingInterpolation(Math.toRadians(0));
-        scoreSpikeMark.setPathEndTimeoutConstraint(3);
+        scoreSpikeMark.setPathEndTimeoutConstraint(0);
 
         initialScoreOnBackdrop = new Path(new BezierLine(new Point(spikeMarkGoalPose), new Point(initialBackdropGoalPose)));
-        initialScoreOnBackdrop.setConstantHeadingInterpolation(Math.PI * 1.5);
-        initialScoreOnBackdrop.setPathEndTimeoutConstraint(3);
+        initialScoreOnBackdrop.setLinearHeadingInterpolation(spikeMarkGoalPose.getHeading(), initialBackdropGoalPose.getHeading());
+        initialScoreOnBackdrop.setPathEndTimeoutConstraint(0);
+
+        firstCycleStack = follower.pathBuilder()
+                .addPath(new BezierLine(new Point(firstCycleBackdropGoalPose), new Point(blueTopTruss)))
+                .setConstantHeadingInterpolation(firstCycleBackdropGoalPose.getHeading())
+                .addPath(new BezierLine(new Point(blueTopTruss), new Point(blueBottomTruss)))
+                .setConstantHeadingInterpolation(firstCycleBackdropGoalPose.getHeading())
+                .addPath(new BezierLine(new Point(blueBottomTruss), new Point(blueRightStack)))
+                .setConstantHeadingInterpolation(firstCycleBackdropGoalPose.getHeading())
+                .setPathEndTimeoutConstraint(0)
+                .build();
     }
 
     public void autonomousPathUpdate() {
         switch (pathState) {
             case 10:
                 follower.followPath(scoreSpikeMark);
+                scoreSpikeMark.setLinearHeadingInterpolation(startPose.getHeading(), spikeMarkGoalPose.getHeading());
                 setPathState(11);
                 break;
             case 11:
-                if (pathTimer.getElapsedTimeSeconds() > 5) {
-                    //openLClaw();
+                if (pathTimer.getElapsedTimeSeconds() > 3) {
                     setPathState(12);
                 }
                 break;
             case 12:
                 if(!follower.isBusy()) {
                     follower.followPath(initialScoreOnBackdrop);
+                    setPathState(13);
                 }
+                break;
+            case 13:
+                follower.holdPoint(new BezierPoint(initialScoreOnBackdrop.getLastControlPoint()), initialBackdropGoalPose.getHeading());
+                setPathState(14);
+                break;
+            case 14:
+                if (pathTimer.getElapsedTimeSeconds() > 3) {
+                    setPathState(15);
+                }
+            case 15:
+                follower.followPath(firstCycleStack, true);
         }
     }
     public void setPathState(int state) {
@@ -115,6 +143,8 @@ public class Blue_Close_Two_Two_Path extends OpMode {
         telemetry.addData("path state", pathState);
         telemetry.addData("x", follower.getPose().getX());
         telemetry.addData("y", follower.getPose().getY());
+        telemetry.addData("heading", follower.getPose().getHeading());
+
         //telemetry.update();
     }
 

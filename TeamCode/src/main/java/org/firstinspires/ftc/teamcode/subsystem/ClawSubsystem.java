@@ -23,9 +23,9 @@ public class ClawSubsystem {
     double whiteScoringClaw = 0.75; //.725
 
     public ClawSubsystem(HardwareMap hardwareMap) {
-        pivot = hardwareMap.get(Servo.class, "pivot");
+       // pivot = hardwareMap.get(Servo.class, "pivot");
         clawL = hardwareMap.get(Servo.class, "clawL");
-        clawR = hardwareMap.get(Servo.class, "clawR");
+        //clawR = hardwareMap.get(Servo.class, "clawR");
     }
 
     //------------------------------Close Claws------------------------------//
@@ -60,7 +60,7 @@ public class ClawSubsystem {
     }
 
     //------------------------------Open Claws------------------------------//
-    public void openLClaw(double openL) {
+    public void openLClaw(double t) {
         clawL.setPosition(openL);
     }
 
