@@ -33,7 +33,7 @@ public class Blue_Close_Two_Two_Path extends OpMode {
     private Pose blueLeftBackdrop = new Pose(46, 51.5+72);
     private Pose blueMiddleBackdrop = new Pose(-36+72, 51.5+72);
     private Pose blueRightBackdrop = new Pose(-27+72, 51.5+72);
-    private Pose blueWhiteBackdrop = new Pose(46+15, 51.5+72, Math.toRadians(270));
+    private Pose blueWhiteBackdrop = new Pose(46, 51.5+72, Math.toRadians(270));
 
     //Through Truss
     private Pose blueTopTruss = new Pose(12+8, 84);
@@ -137,7 +137,7 @@ public class Blue_Close_Two_Two_Path extends OpMode {
                 break;
             case 15:
                 if(!follower.isBusy()) {
-                    follower.followPath(firstCycleStackTo, true);
+                    follower.followPath(firstCycleStackTo, false);
                     setPathState(16);
                 }
                 break;
@@ -148,7 +148,7 @@ public class Blue_Close_Two_Two_Path extends OpMode {
                 break;
             case 17:
                 if(!follower.isBusy()) {
-                    follower.followPath(firstCycleStackBack, true);
+                    follower.followPath(firstCycleStackBack, false);
                     setPathState(18);
                 }
                 break;
