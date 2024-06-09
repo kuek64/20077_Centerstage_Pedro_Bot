@@ -172,7 +172,7 @@ public class Blue_Close_Two_One_One extends OpMode {
                 setPathState(11);
                 break;
             case 11:
-                if (pathTimer.getElapsedTimeSeconds() > 2.5) {
+                if (pathTimer.getElapsedTimeSeconds() > 1.5) {
                     clawSubsystem.closeLClaw();
                     setPathState(12);
                 }

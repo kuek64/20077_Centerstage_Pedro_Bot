@@ -14,13 +14,19 @@ import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.PathChain;
 import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.Point;
 import org.firstinspires.ftc.teamcode.pedroPathing.util.Timer;
 import org.firstinspires.ftc.teamcode.subsystem.ClawSubsystem;
+import org.firstinspires.ftc.teamcode.subsystem.GearRotationSubsystem;
+import org.firstinspires.ftc.teamcode.subsystem.LiftSubsystem;
+import org.firstinspires.ftc.teamcode.subsystem.PresetSubsystem;
 
 @Autonomous(name = "Blue Close 2+1+1 Path", group = "Blue")
 public class Blue_Close_Two_One_One_Path extends OpMode {
 
     private Timer pathTimer, opmodeTimer, scanTimer;
     private String navigation;
-    public ClawSubsystem clawSubsystem;
+    public ClawSubsystem claw;
+    public GearRotationSubsystem gear;
+    public LiftSubsystem lift;
+    public PresetSubsystem presets;
 
 
     //Spike mark locations
@@ -78,8 +84,11 @@ public class Blue_Close_Two_One_One_Path extends OpMode {
         follower = new Follower(hardwareMap);
         follower.setStartingPose(startPose);
 
-        clawSubsystem = new ClawSubsystem(hardwareMap);
-        clawSubsystem.openLClaw();
+        claw = new ClawSubsystem(hardwareMap);
+        gear = new GearRotationSubsystem(hardwareMap);
+        lift = new LiftSubsystem(hardwareMap);
+        presets = new PresetSubsystem(claw, lift, gear);
+
 
         scanTimer.resetTimer();
 
@@ -173,7 +182,6 @@ public class Blue_Close_Two_One_One_Path extends OpMode {
                 break;
             case 11:
                 if (pathTimer.getElapsedTimeSeconds() > 2.5 ) {
-                    clawSubsystem.closeLClaw();
                     setPathState(12);
                 }
 
@@ -191,7 +199,7 @@ public class Blue_Close_Two_One_One_Path extends OpMode {
 
                 break;
             case 14:
-                if (pathTimer.getElapsedTimeSeconds() > 3) {
+                if (pathTimer.getElapsedTimeSeconds() > 2) {
                     setPathState(15);
                 }
                 break;
