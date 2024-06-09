@@ -30,19 +30,19 @@ public class Blue_Close_Two_Two_Path extends OpMode {
     private Pose blueLeftSideRightSpikeMark = new Pose(-36+72, 8+72);
 
     //Backdrop zone locations
-    private Pose blueLeftBackdrop = new Pose(46, 51.5+72);
+    private Pose blueLeftBackdrop = new Pose(36, 51.5+72);
     private Pose blueMiddleBackdrop = new Pose(-36+72, 51.5+72);
     private Pose blueRightBackdrop = new Pose(-27+72, 51.5+72);
     private Pose blueWhiteBackdrop = new Pose(46, 51.5+72, Math.toRadians(270));
 
     //Through Truss
-    private Pose blueTopTruss = new Pose(12+8, 84);
-    private Pose blueBottomTruss = new Pose(12+8, 36);
+    private Pose blueTopTruss = new Pose(12+8+2, 84);
+    private Pose blueBottomTruss = new Pose(12+8+2, 36);
 
     // white pixel stack locations
     private Pose blueLeftStack = new Pose(-36+72+24, -37+72);
     private Pose blueMiddleStack = new Pose(-36+72+12, -37+72);
-    private Pose blueRightStack = new Pose(-36+72, -37+72, Math.toRadians(270));
+    private Pose blueRightStack = new Pose(-36+72, 12, Math.toRadians(270));
 
     private Pose spikeMarkGoalPose, initialBackdropGoalPose, firstCycleStackPose, firstCycleBackdropGoalPose, secondCycleStackPose, secondCycleBackdropGoalPose;
 
@@ -52,7 +52,7 @@ public class Blue_Close_Two_Two_Path extends OpMode {
     private Follower follower;
 
     private Path scoreSpikeMark, initialScoreOnBackdrop;
-    private PathChain firstCycleStackTo, firstCycleStackBack;
+    private PathChain cycleStackTo, cycleStackBack;
 
     private int pathState;
 
@@ -87,7 +87,7 @@ public class Blue_Close_Two_Two_Path extends OpMode {
         initialScoreOnBackdrop.setLinearHeadingInterpolation(spikeMarkGoalPose.getHeading(), initialBackdropGoalPose.getHeading());
         initialScoreOnBackdrop.setPathEndTimeoutConstraint(0);
 
-        firstCycleStackTo = follower.pathBuilder()
+        cycleStackTo = follower.pathBuilder()
                 .addPath(new BezierLine(new Point(firstCycleBackdropGoalPose), new Point(blueTopTruss)))
                 .setConstantHeadingInterpolation(firstCycleBackdropGoalPose.getHeading())
                 .addPath(new BezierLine(new Point(blueTopTruss), new Point(blueBottomTruss)))
@@ -97,7 +97,7 @@ public class Blue_Close_Two_Two_Path extends OpMode {
                 .setPathEndTimeoutConstraint(0)
                 .build();
 
-        firstCycleStackBack = follower.pathBuilder()
+        cycleStackBack = follower.pathBuilder()
                 .addPath(new BezierLine(new Point(blueRightStack), new Point(blueBottomTruss)))
                 .setConstantHeadingInterpolation(blueWhiteBackdrop.getHeading())
                 .addPath(new BezierLine(new Point(blueBottomTruss), new Point(blueTopTruss)))
@@ -137,7 +137,7 @@ public class Blue_Close_Two_Two_Path extends OpMode {
                 break;
             case 15:
                 if(!follower.isBusy()) {
-                    follower.followPath(firstCycleStackTo, false);
+                    follower.followPath(cycleStackTo, true);
                     setPathState(16);
                 }
                 break;
@@ -148,12 +148,67 @@ public class Blue_Close_Two_Two_Path extends OpMode {
                 break;
             case 17:
                 if(!follower.isBusy()) {
-                    follower.followPath(firstCycleStackBack, false);
+                    follower.followPath(cycleStackBack, true);
                     setPathState(18);
                 }
                 break;
             case 18:
+                if (pathTimer.getElapsedTimeSeconds() > 3) {
+                    setPathState(19);
+                }
+                break;
+            case 19:
                 if(!follower.isBusy()) {
+                    follower.followPath(cycleStackTo, true);
+                    setPathState(20);
+                }
+                break;
+            case 20:
+                if (pathTimer.getElapsedTimeSeconds() > 2.5) {
+                    setPathState(21);
+                }
+                break;
+            case 21:
+                if(!follower.isBusy()) {
+                    follower.followPath(cycleStackBack, true);
+                    setPathState(22);
+                }
+                break;
+            case 22:
+                if (pathTimer.getElapsedTimeSeconds() > 3.5) {
+                    setPathState(23);
+                }
+                break;
+            case 23:
+                if(!follower.isBusy()) {
+                    follower.followPath(cycleStackBack, true);
+                    setPathState(24);
+                }
+                break;
+            case 24:
+                if (pathTimer.getElapsedTimeSeconds() > 3) {
+                    setPathState(25);
+                }
+                break;
+            case 25:
+                if(!follower.isBusy()) {
+                    follower.followPath(cycleStackTo, true);
+                    setPathState(26);
+                }
+                break;
+            case 26:
+                if (pathTimer.getElapsedTimeSeconds() > 3) {
+                    setPathState(27);
+                }
+                break;
+            case 27:
+                if(!follower.isBusy()) {
+                    follower.followPath(cycleStackBack, true);
+                    setPathState(28);
+                }
+                break;
+            case 28:
+                if(opmodeTimer.getElapsedTimeSeconds() > 30) {
                     follower.breakFollowing();
                     setPathState(-1);
                 }
