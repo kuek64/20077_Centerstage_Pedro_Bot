@@ -16,6 +16,7 @@ public class ClawSubsystem {
     double scoringClaw = 0.25;
     double whiteGroundClaw = 0.85;
     double whiteScoringClaw = 0.75; //.725
+    boolean autonomous;
 
     public ClawSubsystem(HardwareMap hardwareMap) {
        // pivot = hardwareMap.get(Servo.class, "pivot");

@@ -15,13 +15,15 @@ import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.Path;
 import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.PathChain;
 import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.Point;
 import org.firstinspires.ftc.teamcode.pedroPathing.util.Timer;
-import org.firstinspires.ftc.teamcode.subsystem.*;
+import org.firstinspires.ftc.teamcode.subsystem.ClawSubsystem;
 
 @Autonomous(name = "Blue Close 2+2 Path", group = "Blue")
 public class Blue_Close_Two_Two_Path extends OpMode {
 
     private Timer pathTimer, opmodeTimer, scanTimer;
     private String navigation;
+    private ClawSubsystem clawSubsystem;
+
 
     //Spike mark locations
     private Pose blueLeftSpikeMark = new Pose(43, 30+72); //51
@@ -54,6 +56,55 @@ public class Blue_Close_Two_Two_Path extends OpMode {
     private PathChain cycleStackTo, cycleStackBack, cycleStackToBezier;
 
     private int pathState;
+
+    @Override
+    public void loop() {
+        follower.update();
+
+        autonomousPathUpdate();
+
+        telemetry.addData("path state", pathState);
+        telemetry.addData("x", follower.getPose().getX());
+        telemetry.addData("y", follower.getPose().getY());
+        telemetry.addData("heading", follower.getPose().getHeading());
+
+        //telemetry.update();
+    }
+
+    @Override
+    public void init() {
+        pathTimer = new Timer();
+        opmodeTimer = new Timer();
+        scanTimer = new Timer();
+
+        follower = new Follower(hardwareMap);
+        follower.setStartingPose(startPose);
+
+        ClawSubsystem clawSubsystem = new ClawSubsystem(hardwareMap);
+        clawSubsystem.closeLClaw();
+
+        scanTimer.resetTimer();
+
+    }
+
+    @Override
+    public void init_loop() {
+        if (scanTimer.getElapsedTime() > 750) {
+            scanTimer.resetTimer(); }
+    }
+
+    @Override
+    public void start() {
+        navigation = "left";
+        setBackdropGoalPose();
+        buildPaths();
+        opmodeTimer.resetTimer();
+        setPathState(10);
+    }
+
+    @Override
+    public void stop() {
+    }
 
     public void setBackdropGoalPose() {
         switch (navigation) {
@@ -123,10 +174,10 @@ public class Blue_Close_Two_Two_Path extends OpMode {
                 setPathState(11);
                 break;
             case 11:
-                claw.openLClaw();
                 if (pathTimer.getElapsedTimeSeconds() > 3) {
                     setPathState(12);
                 }
+
                 break;
             case 12:
                 if(!follower.isBusy()) {
@@ -219,52 +270,5 @@ public class Blue_Close_Two_Two_Path extends OpMode {
         pathState = state;
         pathTimer.resetTimer();
         autonomousPathUpdate();
-    }
-
-    @Override
-    public void loop() {
-        follower.update();
-
-        autonomousPathUpdate();
-
-        telemetry.addData("path state", pathState);
-        telemetry.addData("x", follower.getPose().getX());
-        telemetry.addData("y", follower.getPose().getY());
-        telemetry.addData("heading", follower.getPose().getHeading());
-
-        //telemetry.update();
-    }
-
-    @Override
-    public void init() {
-        pathTimer = new Timer();
-        opmodeTimer = new Timer();
-        scanTimer = new Timer();
-
-        follower = new Follower(hardwareMap);
-        follower.setStartingPose(startPose);
-        ClawSubsystem claw = new ClawSubsystem(hardwareMap);
-
-        scanTimer.resetTimer();
-
-    }
-
-    @Override
-    public void init_loop() {
-        if (scanTimer.getElapsedTime() > 750) {
-            scanTimer.resetTimer(); }
-    }
-
-    @Override
-    public void start() {
-        navigation = "left";
-        setBackdropGoalPose();
-        buildPaths();
-        opmodeTimer.resetTimer();
-        setPathState(10);
-    }
-
-    @Override
-    public void stop() {
     }
 }
