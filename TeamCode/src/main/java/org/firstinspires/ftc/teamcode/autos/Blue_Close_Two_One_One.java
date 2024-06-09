@@ -3,26 +3,24 @@ package org.firstinspires.ftc.teamcode.autos;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.pedroPathing.follower.Follower;
 import org.firstinspires.ftc.teamcode.pedroPathing.localization.Pose;
 import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.BezierCurve;
 import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.BezierLine;
 import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.BezierPoint;
-import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.MathFunctions;
 import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.Path;
 import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.PathChain;
 import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.Point;
 import org.firstinspires.ftc.teamcode.pedroPathing.util.Timer;
 import org.firstinspires.ftc.teamcode.subsystem.ClawSubsystem;
 
-@Autonomous(name = "Blue Close 2+2 Path", group = "Blue")
-public class Blue_Close_Two_Two_Path extends OpMode {
+@Autonomous(name = "Blue Close 2+1+1", group = "Blue")
+public class Blue_Close_Two_One_One extends OpMode {
 
     private Timer pathTimer, opmodeTimer, scanTimer;
     private String navigation;
-    private ClawSubsystem clawSubsystem;
+    public ClawSubsystem clawSubsystem;
 
 
     //Spike mark locations
@@ -80,8 +78,8 @@ public class Blue_Close_Two_Two_Path extends OpMode {
         follower = new Follower(hardwareMap);
         follower.setStartingPose(startPose);
 
-        ClawSubsystem clawSubsystem = new ClawSubsystem(hardwareMap);
-        clawSubsystem.closeLClaw();
+        clawSubsystem = new ClawSubsystem(hardwareMap);
+        clawSubsystem.openLClaw();
 
         scanTimer.resetTimer();
 
@@ -174,7 +172,8 @@ public class Blue_Close_Two_Two_Path extends OpMode {
                 setPathState(11);
                 break;
             case 11:
-                if (pathTimer.getElapsedTimeSeconds() > 3) {
+                if (pathTimer.getElapsedTimeSeconds() > 2.5) {
+                    clawSubsystem.closeLClaw();
                     setPathState(12);
                 }
 
