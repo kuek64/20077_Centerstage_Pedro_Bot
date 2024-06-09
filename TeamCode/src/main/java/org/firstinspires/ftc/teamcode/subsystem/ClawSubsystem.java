@@ -7,9 +7,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 public class ClawSubsystem {
 
-    private Servo pivot = null;
-    private Servo clawL;
-    private Servo clawR;
+    private Servo pivot, clawL, clawR;
     double closedL = 0.33;
     double closedR = 0.37;
     double openL = 0.45;//.42
@@ -29,8 +27,6 @@ public class ClawSubsystem {
     public void closeLClaw() {
             clawL.setPosition(closedL);
     }
-
-
 
     public void closeRClaw() {
             clawR.setPosition(closedR);
