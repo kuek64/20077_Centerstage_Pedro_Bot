@@ -41,13 +41,13 @@ public class Blue_Close_Two_One_One_Path extends OpMode {
     private Pose blueWhiteBackdrop = new Pose(36, 123.5, Math.toRadians(270));
 
     //Through Truss
-    private Pose blueTopTruss = new Pose(12+6+2.5, 84); //22
-    private Pose blueBottomTruss = new Pose(12+6+2.5, 36);
+    private Pose blueTopTruss = new Pose(12+6+3, 84); //22
+    private Pose blueBottomTruss = new Pose(12+6+3, 36);
 
     // white pixel stack locations
     private Pose blueLeftStack = new Pose(-36+72+24, -37+72);
     private Pose blueMiddleStack = new Pose(-36+72+12, -37+72);
-    private Pose blueRightStack = new Pose(36+6, 12, Math.toRadians(270)); //47
+    private Pose blueRightStack = new Pose(36+6+2, 12, Math.toRadians(270)); //47
 
     private Pose spikeMarkGoalPose, initialBackdropGoalPose, firstCycleStackPose, firstCycleBackdropGoalPose, secondCycleStackPose, secondCycleBackdropGoalPose;
 
@@ -57,61 +57,10 @@ public class Blue_Close_Two_One_One_Path extends OpMode {
     private Follower follower;
 
     private Path scoreSpikeMark, initialScoreOnBackdrop;
-    private PathChain cycleStackTo, cycleStackBack, cycleStackToBezier;
+    private PathChain cycleStackTo, cycleStackBack, cycleStackToBezier, cycleStackBackBezier;
 
     private int pathState;
 
-    @Override
-    public void loop() {
-        follower.update();
-
-        autonomousPathUpdate();
-
-        telemetry.addData("path state", pathState);
-        telemetry.addData("x", follower.getPose().getX());
-        telemetry.addData("y", follower.getPose().getY());
-        telemetry.addData("heading", follower.getPose().getHeading());
-
-        //telemetry.update();
-    }
-
-    @Override
-    public void init() {
-        pathTimer = new Timer();
-        opmodeTimer = new Timer();
-        scanTimer = new Timer();
-
-        follower = new Follower(hardwareMap);
-        follower.setStartingPose(startPose);
-
-        claw = new ClawSubsystem(hardwareMap);
-        gear = new GearRotationSubsystem(hardwareMap);
-        lift = new LiftSubsystem(hardwareMap);
-        presets = new PresetSubsystem(claw, lift, gear);
-
-
-        scanTimer.resetTimer();
-
-    }
-
-    @Override
-    public void init_loop() {
-        if (scanTimer.getElapsedTime() > 750) {
-            scanTimer.resetTimer(); }
-    }
-
-    @Override
-    public void start() {
-        navigation = "left";
-        setBackdropGoalPose();
-        buildPaths();
-        opmodeTimer.resetTimer();
-        setPathState(10);
-    }
-
-    @Override
-    public void stop() {
-    }
 
     public void setBackdropGoalPose() {
         switch (navigation) {
@@ -167,7 +116,15 @@ public class Blue_Close_Two_One_One_Path extends OpMode {
         cycleStackToBezier = follower.pathBuilder()
                 .addPath(new BezierCurve(new Point(blueWhiteBackdrop), new Point(30,91.6, Point.CARTESIAN), new Point(13, 130.8, Point.CARTESIAN), new Point(blueBottomTruss)))
                 .setConstantHeadingInterpolation(blueWhiteBackdrop.getHeading())
-                .addPath(new BezierLine(new Point(blueBottomTruss), new Point(blueRightStack)))
+                .addPath(new BezierCurve(new Point(blueBottomTruss), new Point(20.5,10, Point.CARTESIAN), new Point(42,35, Point.CARTESIAN), new Point(blueRightStack)))
+                .setConstantHeadingInterpolation(blueWhiteBackdrop.getHeading())
+                .setPathEndTimeoutConstraint(0)
+                .build();
+
+        cycleStackBackBezier = follower.pathBuilder()
+                .addPath(new BezierCurve(new Point(blueRightStack), new Point(42,35, Point.CARTESIAN), new Point(20.5,10, Point.CARTESIAN), new Point(blueBottomTruss)))
+                .setConstantHeadingInterpolation(blueWhiteBackdrop.getHeading())
+                .addPath(new BezierCurve(new Point(blueBottomTruss), new Point(13, 130.8, Point.CARTESIAN), new Point(30,91.6, Point.CARTESIAN), new Point(blueWhiteBackdrop)))
                 .setConstantHeadingInterpolation(blueWhiteBackdrop.getHeading())
                 .setPathEndTimeoutConstraint(0)
                 .build();
@@ -176,12 +133,14 @@ public class Blue_Close_Two_One_One_Path extends OpMode {
     public void autonomousPathUpdate() {
         switch (pathState) {
             case 10:
+                gear.wheelServo_Activated();
                 follower.followPath(scoreSpikeMark);
                 scoreSpikeMark.setLinearHeadingInterpolation(startPose.getHeading(), spikeMarkGoalPose.getHeading());
                 setPathState(11);
                 break;
             case 11:
                 if (pathTimer.getElapsedTimeSeconds() > 2.5 ) {
+                    claw.openLClaw();
                     setPathState(12);
                 }
 
@@ -190,6 +149,7 @@ public class Blue_Close_Two_One_One_Path extends OpMode {
                 if(!follower.isBusy()) {
                     follower.setMaxPower(0.5);
                     follower.followPath(initialScoreOnBackdrop);
+                    presets.ScoringPos();
                     setPathState(13);
                 }
                 break;
@@ -200,35 +160,48 @@ public class Blue_Close_Two_One_One_Path extends OpMode {
                 break;
             case 14:
                 if (pathTimer.getElapsedTimeSeconds() > 2) {
+                    claw.openRClaw();
                     setPathState(15);
                 }
                 break;
             case 15:
                 if(!follower.isBusy()) {
+                    if(pathTimer.getElapsedTimeSeconds() > 0.5) {
+                        presets.GroundPos();
+                        claw.openClaws();
+                        claw.whiteGroundClawPos();
+                    }
+
                     follower.setMaxPower(1);
-                    follower.followPath(cycleStackTo, true);
+                    follower.followPath(cycleStackToBezier, true);
                     setPathState(16);
                 }
                 break;
             case 16:
                 if (pathTimer.getElapsedTimeSeconds() > 3) {
+                    presets.WhiteStack();
+                    claw.closeClaws();
                     setPathState(17);
                 }
                 break;
             case 17:
                 if(!follower.isBusy()) {
-                    follower.followPath(cycleStackBack, true);
+                    follower.followPath(cycleStackBackBezier, true);
                     setPathState(18);
                 }
                 break;
             case 18:
+                if(pathTimer.getElapsedTimeSeconds() > 2)
+                {
+
+                }
                 if (pathTimer.getElapsedTimeSeconds() > 3) {
                     setPathState(19);
                 }
                 break;
             case 19:
                 if(!follower.isBusy()) {
-                    follower.followPath(cycleStackTo, true);
+                    follower.followPath(cycleStackToBezier, true);
                     setPathState(20);
                 }
                 break;
@@ -239,7 +212,7 @@ public class Blue_Close_Two_One_One_Path extends OpMode {
                 break;
             case 21:
                 if(!follower.isBusy()) {
-                    follower.followPath(cycleStackBack, true);
+                    follower.followPath(cycleStackBackBezier, true);
                     setPathState(22);
                 }
                 break;
@@ -250,7 +223,7 @@ public class Blue_Close_Two_One_One_Path extends OpMode {
                 break;
             case 23:
                 if(!follower.isBusy()) {
-                    follower.followPath(cycleStackTo, true);
+                    follower.followPath(cycleStackToBezier, true);
                     setPathState(24);
                 }
                 break;
@@ -261,7 +234,7 @@ public class Blue_Close_Two_One_One_Path extends OpMode {
                 break;
             case 25:
                 if(!follower.isBusy()) {
-                    follower.followPath(cycleStackBack, true);
+                    follower.followPath(cycleStackBackBezier, true);
                     setPathState(26);
                 }
                 break;
@@ -277,5 +250,56 @@ public class Blue_Close_Two_One_One_Path extends OpMode {
         pathState = state;
         pathTimer.resetTimer();
         autonomousPathUpdate();
+    }
+
+    @Override
+    public void loop() {
+        follower.update();
+
+        autonomousPathUpdate();
+
+        telemetry.addData("path state", pathState);
+        telemetry.addData("x", follower.getPose().getX());
+        telemetry.addData("y", follower.getPose().getY());
+        telemetry.addData("heading", follower.getPose().getHeading());
+        telemetry.update();
+    }
+
+    @Override
+    public void init() {
+        pathTimer = new Timer();
+        opmodeTimer = new Timer();
+        scanTimer = new Timer();
+
+        follower = new Follower(hardwareMap);
+        follower.setStartingPose(startPose);
+
+        //claw = new ClawSubsystem(hardwareMap);
+        //gear = new GearRotationSubsystem(hardwareMap);
+        //lift = new LiftSubsystem(hardwareMap);
+        //presets = new PresetSubsystem(claw, lift, gear);
+
+
+        scanTimer.resetTimer();
+
+    }
+
+    @Override
+    public void init_loop() {
+        if (scanTimer.getElapsedTime() > 750) {
+            scanTimer.resetTimer(); }
+    }
+
+    @Override
+    public void start() {
+        navigation = "left";
+        setBackdropGoalPose();
+        buildPaths();
+        opmodeTimer.resetTimer();
+        setPathState(10);
+    }
+
+    @Override
+    public void stop() {
     }
 }

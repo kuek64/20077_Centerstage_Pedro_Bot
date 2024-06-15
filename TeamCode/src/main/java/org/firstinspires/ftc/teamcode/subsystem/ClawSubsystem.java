@@ -55,16 +55,16 @@ public class ClawSubsystem {
 
     //------------------------------Claw Rotate------------------------------//
 
-    public void groundClaw() {
+    public void groundClawPos() {
             pivot.setPosition(groundClaw);
     }
 
-    public void scoringClaw()     {
+    public void scoringClawPos()     {
             pivot.setPosition(scoringClaw);
     }
 
 
-    public void whiteGroundClaw() {
+    public void whiteGroundClawPos() {
             pivot.setPosition(whiteGroundClaw);
     }
 }
